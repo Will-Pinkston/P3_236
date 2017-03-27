@@ -33,6 +33,7 @@ public:
     bool helperCheck(tuple* check, std::set<tuple, tuple_compare> checkAgainst);
     
     std::set<tuple, tuple_compare> project(std::vector<std::string> columns);
+    bool projectHelper(tuple*& holder, std::set<tuple, tuple_compare>::iterator tupleCounter, std::vector<int> mapped);
     int findInMap(std::string find);
     
     int getSize();

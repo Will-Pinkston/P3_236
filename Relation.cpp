@@ -88,22 +88,42 @@ std::set<tuple, relation::tuple_compare> relation::project(std::vector<std::stri
     for (int i = 0; i < numTuples; i++)
     {
         tuple* holder = new tuple;
-        for (int j = 0; j < _numAttributes; j++)
-        {
-            for (int k = 0; k < mapped.size(); k++)
-            {
-                if (j == mapped[k])
-                {
-                    holder->addAttribute(tupleCounter->getAttribute(j));
-                }
-            }
-        }
+        projectHelper(holder, tupleCounter, mapped);
+//        for (int j = 0; j < _numAttributes; j++)
+//        {
+//            for (int k = 0; k < mapped.size(); k++)
+//            {
+//                if (j == mapped[k])
+//                {
+//                    holder->addAttribute(tupleCounter->getAttribute(j));
+//                }
+//            }
+//        }
         bool unique = helperCheck(holder, retVal);
         if (unique) retVal.insert(*holder);
         tupleCounter++;
     }
     
     return retVal;
+}
+
+bool relation::projectHelper(tuple*& holder, std::set<tuple, tuple_compare>::iterator tupleCounter, std::vector<int> mapped)
+{
+    //
+    //
+    for (int j = 0; j < _numAttributes; j++)
+    {
+        for (int k = 0; k < mapped.size(); k++)
+        {
+            if (j == mapped[k])
+            {
+                holder->addAttribute(tupleCounter->getAttribute(j));
+            }
+        }
+    }
+    //
+    //
+    return true;
 }
 
 int relation::findInMap(std::string find)

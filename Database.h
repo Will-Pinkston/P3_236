@@ -22,6 +22,7 @@ public:
     
     std::string answerQueries();
     std::string evalQuery(int relationSelect, std::vector<parameter*> parameterList);
+    bool evalHelper(std::vector<parameter*>& parameterList, int i, int relationSelect, std::vector<std::string>& projectionHolder);
     
     std::string answerToString(std::set<tuple, relation::tuple_compare> response, std::vector<std::string> responseMap);
 private:
