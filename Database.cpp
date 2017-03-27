@@ -97,25 +97,26 @@ std::string database::evalQuery(int relationSelect, std::vector<parameter*> para
     
     for (int i = 0; i < parameterList.size(); i++)
     {
-        std::string paramType = parameterList[i]->getType();
-        if (paramType == "ID")
-        {
-            _relations[relationSelect]->rename(i, parameterList[i]->toString());
-            bool parallel = false;
-            for (int j = 0; j < projectionHolder.size(); j++)
-            {
-                if (parameterList[i]->toString() == projectionHolder[j])
-                {
-                    _relations[relationSelect]->innerSelectParallel(parameterList[i]->toString());
-                    parallel = true;
-                }
-            }
-            if (!parallel) projectionHolder.push_back(parameterList[i]->toString());
-        }
-        else if (paramType == "STRING")
-        {
-            _relations[relationSelect]->innerSelect(i, parameterList[i]->toString());
-        }
+        evalHelper(parameterList, i, relationSelect, projectionHolder);
+//        std::string paramType = parameterList[i]->getType();
+//        if (paramType == "ID")
+//        {
+//            _relations[relationSelect]->rename(i, parameterList[i]->toString());
+//            bool parallel = false;
+//            for (int j = 0; j < projectionHolder.size(); j++)
+//            {
+//                if (parameterList[i]->toString() == projectionHolder[j])
+//                {
+//                    _relations[relationSelect]->innerSelectParallel(parameterList[i]->toString());
+//                    parallel = true;
+//                }
+//            }
+//            if (!parallel) projectionHolder.push_back(parameterList[i]->toString());
+//        }
+//        else if (paramType == "STRING")
+//        {
+//            _relations[relationSelect]->innerSelect(i, parameterList[i]->toString());
+//        }
     }
     if (projectionHolder.size() != 0)
     {
@@ -136,6 +137,34 @@ std::string database::evalQuery(int relationSelect, std::vector<parameter*> para
     }
     else retVal = answerToString(response,responseMap);
     return retVal;
+}
+
+bool database::evalHelper(std::vector<parameter*>& parameterList, int i, int relationSelect, std::vector<std::string>& projectionHolder)
+{
+    //
+    //
+    std::string paramType = parameterList[i]->getType();
+    if (paramType == "ID")
+    {
+        _relations[relationSelect]->rename(i, parameterList[i]->toString());
+        bool parallel = false;
+        for (int j = 0; j < projectionHolder.size(); j++)
+        {
+            if (parameterList[i]->toString() == projectionHolder[j])
+            {
+                _relations[relationSelect]->innerSelectParallel(parameterList[i]->toString());
+                parallel = true;
+            }
+        }
+        if (!parallel) projectionHolder.push_back(parameterList[i]->toString());
+    }
+    else if (paramType == "STRING")
+    {
+        _relations[relationSelect]->innerSelect(i, parameterList[i]->toString());
+    }
+    //
+    //
+    return true;
 }
 
 std::string database::answerToString(std::set<tuple, relation::tuple_compare> response, std::vector<std::string> responseMap)
